@@ -1,0 +1,9 @@
+git clone https://github.com/rabbitmq/tls-gen tls-gen
+cd tls-gen/basic
+# private key password
+make PASSWORD=bunnies
+make verify
+make info
+ls -l ./result
+
+##after generating tls-gen copy its  requested path to advanced.config 
