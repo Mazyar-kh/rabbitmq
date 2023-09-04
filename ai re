@@ -1,0 +1,23 @@
+import pika
+import ssl
+
+# RabbitMQ connection parameters
+credentials = pika.PlainCredentials('username', 'password')
+parameters = pika.ConnectionParameters('rabbitmq-server', 5671, '/', credentials, ssl=True, ssl_options=ssl.create_default_context())
+
+# Establish connection
+connection = pika.BlockingConnection(parameters)
+channel = connection.channel()
+
+# Declare queue
+channel.queue_declare(queue='my_queue')
+
+# Callback function for receiving messages
+def callback(ch, method, properties, body):
+    print("Received message:", body.decode())
+
+# Start consuming messages
+channel.basic_consume(queue='my_queue', on_message_callback=callback, auto_ack=True)
+
+# Start consuming loop
+channel.start_consuming()
