@@ -1,0 +1,33 @@
+import pika
+import ssl
+
+# Set up connection parameters
+credentials = pika.PlainCredentials('username', 'password')
+context = ssl.create_default_context(cafile='path/to/ca_certificate.pem')
+ssl_options = pika.SSLOptions(context, 'hostname')
+
+parameters = pika.ConnectionParameters(
+    host='rabbitmq_server',
+    port=5671,
+    virtual_host='/',
+    credentials=credentials,
+    ssl_options=ssl_options
+)
+
+# Create a connection
+connection = pika.BlockingConnection(parameters)
+
+# Create a channel
+channel = connection.channel()
+
+# Declare the queue
+channel.queue_declare(queue='my_queue')
+
+# Define the message to send
+message = 'Hello, RabbitMQ!'
+
+# Publish the message to the queue
+channel.basic_publish(exchange='', routing_key='my_queue', body=message)
+
+# Close the connection
+connection.close()
