@@ -144,6 +144,24 @@ channel.start_consuming()
 # Close the connection
 connection.close()
 
+==================================================================================  ====================
+
+import pika
+
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+channel = connection.channel()
+
+channel.queue_declare(queue='first')
+message = 'This is a testing message'
+
+# Declare an exchange
+channel.exchange_declare(exchange='my_exchange', exchange_type='direct')
+
+channel.basic_publish(exchange='my_exchange', routing_key='first', body=message, properties=pika.BasicProperties(delivery_mode=2))
+print('Sent message')
+
+connection.close()
+
 
 
 
