@@ -1,0 +1,14 @@
+import pika
+
+connection = pika.blockingconnection(pika.coonectioparameters(host='localhost'))
+ch = connection.channel()
+
+ch.queue_declare(queue='first')
+
+message = 'this is a testing message'
+
+ch.basic publish(exchange='', routing key='first', body=message, prperties=pika.basicproperties(selivery mode=2,))
+
+print('sent message')
+
+connection.close()
