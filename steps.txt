@@ -1,0 +1,55 @@
+To set up the RabbitMQ SSL plugin for both the server and client, you'll need to follow a few steps. Here's a step-by-step guide:
+
+Server-side setup:
+1. Enable the SSL plugin by running the following command:
+```bash
+rabbitmq-plugins enable rabbitmq_ssl
+```
+2. Generate a self-signed SSL certificate or obtain a trusted certificate from a CA (Certificate Authority). You can use OpenSSL to generate a self-signed certificate with the following command:
+```bash
+openssl req -new -x509 -days 365 -nodes -out server_certificate.pem -keyout server_key.pem
+```
+This will generate two files: `server_certificate.pem` (the server certificate) and `server_key.pem` (the server's private key).
+
+3. Move the generated certificate and private key files to a secure location.
+```bash
+mv server_certificate.pem /path/to/certs/
+mv server_key.pem /path/to/certs/
+```
+
+4. Update the RabbitMQ configuration file (`rabbitmq.conf`) to enable SSL. Open the configuration file using a text editor and add the following lines:
+```plaintext
+listeners.ssl.default = 5671
+ssl_options.cacertfile = /path/to/certs/server_certificate.pem
+ssl_options.certfile   = /path/to/certs/server_certificate.pem
+ssl_options.keyfile    = /path/to/certs/server_key.pem
+ssl_options.verify     = verify_peer
+ssl_options.fail_if_no_peer_cert = false
+```
+
+5. Restart RabbitMQ for the changes to take effect.
+
+Client-side setup:
+1. Make sure that the RabbitMQ SSL plugin is enabled on the server-side (as explained in the server-side setup).
+
+2. Generate a client SSL certificate and private key. Again, you can use OpenSSL for this purpose. Run the following command:
+```bash
+openssl req -new -x509 -days 365 -nodes -out client_certificate.pem -keyout client_key.pem
+```
+This will generate two files: `client_certificate.pem` (the client certificate) and `client_key.pem` (the client's private key).
+
+3. Move the generated certificate and private key files to a secure location.
+```bash
+mv client_certificate.pem /path/to/certs/
+mv client_key.pem /path/to/certs/
+```
+
+4. Update the client code to include SSL/TLS connectivity. This involves providing the appropriate paths to the client certificate and private key files, as well as configuring the other SSL options required by the client library you're using.
+
+For example, if you're using pika, refer to the previous code snippet I provided for setting up the client-side SSL/TLS connection.
+
+5. Ensure that the client application has proper permissions to access the client certificate and private key files.
+
+That's it! You should now be able to establish an SSL/TLS-secured connection between your RabbitMQ server and client.
+
+Please note that it's recommended to use trusted certificates issued by a trusted CA in a production environment. Self-signed certificates are suitable for testing purposes but may raise security warnings in client applications.
