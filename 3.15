@@ -41,3 +41,8 @@ connection.close()
 raise self._reap_last_connection_workflow_error(error)
 pika.exceptions.AMQPConnectionError
 
+
+
+
+    connection = pika.BlockingConnection(parameters)
+pika.exceptions.AMQPConnectionError: 
