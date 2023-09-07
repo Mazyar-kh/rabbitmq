@@ -6,3 +6,9 @@ The page you mentioned is a GitHub repository that provides instructions on how 
 4. Follow the prompts provided by the script to complete the setup process.
 
 After completing these steps, RabbitMQ should be configured to use SSL for secure communication. I hope this helps! Let me know if you have any further questions. 😊
+
+
+================================
+
+openssl rsa -in /path/to/encrypted/key.pem -out /path/to/decrypted/key.pem
+
