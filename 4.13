@@ -38,6 +38,10 @@ print(f"Message sent: {message}")
 # Close the connection
 connection.close()
 
+==============================
+
+https://github.com/homoprogramus/rabbitmq_ssl
+
 
 
 
