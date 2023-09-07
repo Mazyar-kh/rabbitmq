@@ -9,7 +9,7 @@ ssl_context.load_cert_chain(
     keyfile="/etc/rabbitmq/tls-gen/basic/result/client_maz-virtual-machine_key.pem",
     password="mazyar"
 )
-
+#connection = pika.BlockingConnection(parameters)
 parameters = pika.ConnectionParameters(
     host='127.0.0.1',
     port=5671,
