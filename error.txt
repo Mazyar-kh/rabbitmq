@@ -1,2 +1,6 @@
    self._sslobj = self._context._wrap_socket(
 ssl.SSLError: Cannot create a client socket with a PROTOCOL_TLS_SERVER context (_ssl.c:811)
+
+
+
+https://weblogs.asp.net/jeffreyabecker/Using-SSL-client-certificates-for-authentication-with-RabbitMQ
