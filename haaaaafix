@@ -1,0 +1,73 @@
+In the code you provided, there is an issue with the way the `connection` object is created. The `connection` object is created using `pika.ConnectionParameters('127.0.0.1')`, which does not include the SSL options or port number specified earlier in the code. To use SSL and connect to the RabbitMQ server on port 5671, you should create the `connection` object using the `parameters` object that was defined earlier, like this:
+
+```python
+connection = pika.BlockingConnection(parameters)
+```
+
+This will ensure that the connection to the RabbitMQ server uses SSL and connects to the correct port.
+
+Additionally, there is an issue with the way the SSL context is created. The `ssl_context.load_cert_chain()` method is being called with incorrect arguments. The `ca_certs` and `cert_reqs` arguments are not valid for this method and should be removed. Instead, you can use the `ssl_context.load_verify_locations()` method to specify the path to the CA certificate file, like this:
+
+```python
+ssl_context = ssl.create_default_context()
+ssl_context.load_verify_locations('/home/vv/testca/cacert.pem')
+ssl_context.load_cert_chain(
+    certfile='/home/vv/client/cert.pem',
+    keyfile='/home/vv/client/key.pem'
+)
+```
+
+Here is the corrected version of your code that should fix these issues:
+
+```python
+import pika
+import ssl
+
+# RabbitMQ connection parameters
+credentials = pika.PlainCredentials('guest', 'guest')
+ssl_context = ssl.create_default_context()
+ssl_context.load_verify_locations('/home/vv/testca/cacert.pem')
+ssl_context.load_cert_chain(
+    certfile='/home/vv/client/cert.pem',
+    keyfile='/home/vv/client/key.pem'
+)
+
+parameters = pika.ConnectionParameters(
+    host='127.0.0.1',
+    port=5671,
+    virtual_host='/',
+    credentials=credentials,
+    ssl_options=pika.SSLOptions(ssl_context)
+)
+
+# Connect to RabbitMQ server
+connection = pika.BlockingConnection(parameters)
+channel = connection.channel()
+
+# Declare a queue and an exchange
+queue_name = "my_queue"
+exchange_name = "my_exchange"
+
+channel.queue_declare(queue=queue_name, durable=True)
+channel.exchange_declare(exchange=exchange_name, exchange_type='direct')
+
+# Bind the queue to the exchange
+channel.queue_bind(queue=queue_name, exchange=exchange_name)
+
+# Publish a persistent message to the exchange
+message = "Hello, RabbitMQ!"
+channel.basic_publish(
+    exchange=exchange_name,
+    routing_key=queue_name,
+    body=message,
+    properties=pika.BasicProperties(
+        delivery_mode=2  # make message persistent
+    )
+)
+print(f"Message sent: {message}")
+
+# Close the connection
+connection.close()
+```
+
+I hope this helps! Let me know if you have any further questions. 😊
