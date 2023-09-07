@@ -3,12 +3,11 @@ import ssl
 
 # RabbitMQ connection parameters
 credentials = pika.PlainCredentials('guest', 'guest')
-ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+ssl_context = ssl.create_default_context()
+ssl_context.load_verify_locations('/home/vv/testca/cacert.pem')
 ssl_context.load_cert_chain(
-       ca_certs='/home/vv/testca/cacert.pem',
-        keyfile='/home/vv/client/key.pem',
-        certfile='/home/vv/client/cert.pem',
-        cert_reqs=ssl.CERT_REQUIRED
+    certfile='/home/vv/client/cert.pem',
+    keyfile='/home/vv/client/key.pem'
 )
 #connection = pika.BlockingConnection(parameters)
 parameters = pika.ConnectionParameters(
