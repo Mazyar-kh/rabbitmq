@@ -43,6 +43,9 @@ connection.close()
 https://github.com/homoprogramus/rabbitmq_ssl
 
 
+https://cjshelton.github.io/blog/2019/12/18/rabbitmq-client-certificate-authentication.html
+
+
 
 
 
