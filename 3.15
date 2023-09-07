@@ -36,3 +36,8 @@ print(f"Message sent: {message}")
 
 # Close the connection
 connection.close()
+
+
+raise self._reap_last_connection_workflow_error(error)
+pika.exceptions.AMQPConnectionError
+
