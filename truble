@@ -8,3 +8,7 @@ openssl s_client -connect localhost:8443 \
   -verify 8 \
   -verify_hostname localhost \
   -servername localhost
+
+
+  Verify return code: 62 (hostname mismatch)
+
