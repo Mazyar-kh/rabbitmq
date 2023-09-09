@@ -17,6 +17,16 @@ conn = Connection(
     heartbeat=10  # Set the heartbeat parameter
 )
 
+# Create an exchange
+exchange = Exchange('my_exchange', type='direct')
+
+# Create a queue
+queue = Queue('my_queue', exchange=exchange, routing_key='my_routing_key')
+
+# Bind the queue to the exchange
+queue.queue_bind()
+
 # Create a producer
 with conn.Producer() as producer:
-    # Your message publishing code here
+    # Publish messages to the exchange
+    producer.publish('Hello, World!', routing_key='my_routing_key')
