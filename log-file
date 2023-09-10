@@ -1,0 +1,13 @@
+[
+  {rabbit, [
+     {ssl_listeners, [5671]},
+     {tcp_listeners, []},
+     {log.file.level, debug},
+     {ssl_options, [{cacertfile, "/home/kk/example.com.csr"},
+                    {certfile,"/home/kk/example.com.crt"},
+                    {keyfile,"/home/kk/example.com.key"},
+                    {verify,verify_peer},
+                    {fail_if_no_peer_cert,false}]}
+   ]}
+].
+
