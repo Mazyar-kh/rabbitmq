@@ -35,3 +35,41 @@ connection.close()
 
 
 TypeError: SSLOptions.__init__() got an unexpected keyword argument 'certfile'
+
+
+
+
+
+
+
+import pika
+import ssl
+
+# Define SSL options
+ssl_context = ssl.create_default_context(cafile='/home/kk/client/cert.pem')
+ssl_context.load_cert_chain('/home/kk/client/cert.pem', keyfile='/home/kk/client/key.pem')
+
+ssl_options = pika.SSLOptions(
+    context=ssl_context,
+    cert_reqs=ssl.CERT_REQUIRED,
+    server_hostname='localhost'
+)
+
+# Define connection parameters
+connection_params = pika.ConnectionParameters(
+    host='localhost',
+    port=5671,
+    ssl_options=ssl_options,
+)
+
+# Establish connection
+connection = pika.BlockingConnection(connection_params)
+
+# Open a channel
+channel = connection.channel()
+
+# ... rest of your RabbitMQ client code ...
+
+# Don't forget to close the connection when done
+connection.close()
+
