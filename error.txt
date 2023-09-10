@@ -1,6 +1,59 @@
-   self._sslobj = self._context._wrap_socket(
-ssl.SSLError: Cannot create a client socket with a PROTOCOL_TLS_SERVER context (_ssl.c:811)
+import pika
+import ssl
+
+context = ssl.create_default_context(cafile='/home/kk/testca/cacert.pem')
+context.load_cert_chain(certfile='/home/kk/client/cert.pem', keyfile='/home/kk/client/key.pem')
+ssl_options = pika.SSLOptions(context)
+
+parameters = pika.ConnectionParameters(
+host='127.0.0.1',
+port=5671,
+virtual_host='/',
+credentials=pika.PlainCredentials('guest', 'guest'),
+ssl_options=ssl_options
+)
+def main():
+
+    # NOTE: These paramerers work with all Pika connection types
+    params = pika.ConnectionParameters(heartbeat_interval=600,blocked_connection_timeout=300)
+
+    conn = pika.BlockingConnection(params)
+
+    chan = conn.channel()
+
+    chan.basic_publish('', 'my-alphabet-queue', "abc")
+
+    # If publish causes the connection to become blocked, then this conn.close()
+    # would hang until the connection is unblocked, if ever. However, the
+    # blocked_connection_timeout connection parameter would interrupt the wait,
+    # resulting in ConnectionClosed exception from BlockingConnection (or the
+    # on_connection_closed callback call in an asynchronous adapter)
+    conn.close()
 
 
+if __name__ == '__main__':
+    main()
 
-https://weblogs.asp.net/jeffreyabecker/Using-SSL-client-certificates-for-authentication-with-RabbitMQ
+
+    # Connect to RabbitMQ server
+connection = pika.BlockingConnection(parameters)
+channel = connection.channel()
+
+    # Declare a queue
+queue_name = "my_queue"
+channel.queue_declare(queue=queue_name)
+channel.exchange_declare(exchange='my_exchange', exchange_type='direct')
+
+    # Bind the queue to the exchange
+channel.queue_bind(exchange='my_exchange', queue=queue_name, routing_key='my_queue')
+
+    # Publish a message
+message = "Hello, RabbitMQ!"
+channel.basic_publish(exchange='my_exchange', routing_key='my_queue', body=message)
+print(f"Message sent: {message}")
+
+    # Close the connection
+connection.close()
+
+#except pika.exceptions.AMQPConnectionError as e:
+ #   print("An error occurred while connecting to RabbitMQ:", str(e))
