@@ -98,3 +98,10 @@ connection.close()
   ssl_options=ssl_context.wrap_socket(socket.socket())
 NameError: name 'socket' is not defined
 
+
+
+
+ raise TypeError(
+TypeError: ssl_options must be None or SSLOptions but got <ssl.SSLSocket fd=3, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('0.0.0.0', 0)>
+
+
