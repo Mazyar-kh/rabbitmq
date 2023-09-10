@@ -1,13 +1,15 @@
-import functools 
-import logging 
-import pika 
-import threading 
-import time 
+import functools
+import logging
+import pika
+import threading
+import time
 import ssl
 
-LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
-               '-35s %(lineno) -5d: %(message)s')
-LOGGER = logging.getLogger(__name__)  
+LOG_FORMAT = (
+    '%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
+    '-35s %(lineno) -5d: %(message)s'
+)
+LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
 
@@ -28,8 +30,10 @@ def do_work(connection, channel, delivery_tag, body):
     thread_id = threading.get_ident()
     fmt1 = 'Thread id: {} Delivery tag: {} Message body: {}'
     LOGGER.info(fmt1.format(thread_id, delivery_tag, body))
+    
     # Sleeping to simulate 10 seconds of work
     time.sleep(10)
+    
     cb = functools.partial(ack_message, channel, delivery_tag)
     connection.add_callback_threadsafe(cb)
 
@@ -45,19 +49,24 @@ def on_message(channel, method_frame, header_frame, body, args):
 credentials = pika.PlainCredentials('guest', 'guest')
 
 # Enable TLS connection
-ssl_options = {
-    "ca_certs": "/home/kk/testca/cacert.pem",
-    "certfile": "/home/kk/client/cert.pem",
-    "keyfile": "/home/kk/client/key.pem",
-    "cert_reqs": ssl.CERT_REQUIRED,
-    "ssl_version": ssl.PROTOCOL_TLSv1_2
-}
+ssl_options = ssl.create_default_context(
+    cafile="/home/kk/testca/cacert.pem",
+    certfile="/home/kk/client/cert.pem",
+    keyfile="/home/kk/client/key.pem"
+)
+ssl_options.check_hostname = False
 
-parameters = pika.ConnectionParameters(host='localhost', port=5671, credentials=credentials, ssl=True, ssl_options=ssl_options)
+parameters = pika.ConnectionParameters(
+    host='localhost',
+    port=5671,
+    credentials=credentials,
+    ssl=True,
+    ssl_options=ssl_options
+)
 
 connection = pika.BlockingConnection(parameters)
-
 channel = connection.channel()
+
 channel.exchange_declare(exchange="test_exchange", exchange_type="direct", passive=False, durable=True, auto_delete=False)
 channel.queue_declare(queue="standard", auto_delete=True)
 channel.queue_bind(queue="standard", exchange="test_exchange", routing_key="standard_key")
@@ -77,23 +86,3 @@ for thread in threads:
     thread.join()
 
 connection.close()
-
-
-
-
-
-
-
-TypeError: ssl_options must be None or SSLOptions but got {'ca_certs': '/home/kk/testca/cacert.pem', 'certfile': '/home/kk/client/cert.pem', 'keyfile': '/home/kk/client/key.pem', 'cert_reqs': <VerifyMode.CERT_REQUIRED: 2>, 'ssl_version': <_SSLMethod.PROTOCOL_TLSv1_2: 5>}
-
-
-
-
-
-
-
-
-
-
-
-
