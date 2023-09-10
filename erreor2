@@ -27,3 +27,11 @@ channel = connection.channel()
 
 # Don't forget to close the connection when done
 connection.close()
+
+
+
+
+
+
+
+TypeError: SSLOptions.__init__() got an unexpected keyword argument 'certfile'
