@@ -1,2 +1,30 @@
-  ssl_options = pika.SSLOptions(
-TypeError: SSLOptions.__init__() got an unexpected keyword argument 'ssl_version'
+import pika
+import ssl
+
+# Define SSL options
+ssl_options = pika.SSLOptions(
+    ssl_version=ssl.PROTOCOL_TLSv1_2,
+    ca_certs='/home/kk/client/cert.pem',
+    keyfile='/home/kk/client/key.pem',
+    certfile='/home/kk/client/cert.pem',
+    cert_reqs=ssl.CERT_REQUIRED
+)
+
+# Define connection parameters
+connection_params = pika.ConnectionParameters(
+    host='localhost',
+    port=5671,
+    ssl_options=ssl_options,
+)
+
+# Establish connection
+connection = pika.BlockingConnection(connection_params)
+
+# Open a channel
+channel = connection.channel()
+
+# ... rest of your RabbitMQ client code ...
+
+# Don't forget to close the connection when done
+connection.close()
+s
