@@ -3,11 +3,11 @@ import ssl
 
 # Define SSL options
 ssl_options = pika.SSLOptions(
-    ssl_version=ssl.PROTOCOL_TLSv1_2,
-    ca_certs='/home/kk/client/cert.pem',
-    keyfile='/home/kk/client/key.pem',
+    context=ssl.create_default_context(cafile='/home/kk/client/cert.pem'),
     certfile='/home/kk/client/cert.pem',
-    cert_reqs=ssl.CERT_REQUIRED
+    keyfile='/home/kk/client/key.pem',
+    cert_reqs=ssl.CERT_REQUIRED,
+    server_hostname='localhost'
 )
 
 # Define connection parameters
@@ -27,4 +27,3 @@ channel = connection.channel()
 
 # Don't forget to close the connection when done
 connection.close()
-s
