@@ -6,23 +6,20 @@ context.load_cert_chain(certfile='/home/kk/client/cert.pem', keyfile='/home/kk/c
 ssl_options = pika.SSLOptions(context)
 
 parameters = pika.ConnectionParameters(
-host='127.0.0.1',
-port=5671,
-virtual_host='/',
-credentials=pika.PlainCredentials('guest', 'guest'),
-ssl_options=ssl_options
+    host='127.0.0.1',
+    port=5671,
+    virtual_host='/',
+    credentials=pika.PlainCredentials('guest', 'guest'),
+    ssl_options=ssl_options
 )
+
 def main():
-
-    # NOTE: These paramerers work with all Pika connection types
-    params = pika.ConnectionParameters(heartbeat_interval=600,blocked_connection_timeout=300)
-
+    # NOTE: These parameters work with all Pika connection types
+    params = pika.ConnectionParameters(heartbeat_interval=600, blocked_connection_timeout=300)
     conn = pika.BlockingConnection(params)
-
     chan = conn.channel()
-
     chan.basic_publish('', 'my-alphabet-queue', "abc")
-
+    
     # If publish causes the connection to become blocked, then this conn.close()
     # would hang until the connection is unblocked, if ever. However, the
     # blocked_connection_timeout connection parameter would interrupt the wait,
@@ -30,30 +27,28 @@ def main():
     # on_connection_closed callback call in an asynchronous adapter)
     conn.close()
 
-
 if __name__ == '__main__':
     main()
 
-
-    # Connect to RabbitMQ server
+# Connect to RabbitMQ server
 connection = pika.BlockingConnection(parameters)
 channel = connection.channel()
 
-    # Declare a queue
+# Declare a queue
 queue_name = "my_queue"
 channel.queue_declare(queue=queue_name)
 channel.exchange_declare(exchange='my_exchange', exchange_type='direct')
 
-    # Bind the queue to the exchange
+# Bind the queue to the exchange
 channel.queue_bind(exchange='my_exchange', queue=queue_name, routing_key='my_queue')
 
-    # Publish a message
+# Publish a message
 message = "Hello, RabbitMQ!"
 channel.basic_publish(exchange='my_exchange', routing_key='my_queue', body=message)
 print(f"Message sent: {message}")
 
-    # Close the connection
+# Close the connection
 connection.close()
 
-#except pika.exceptions.AMQPConnectionError as e:
- #   print("An error occurred while connecting to RabbitMQ:", str(e))
+# except pika.exceptions.AMQPConnectionError as e:
+#     print("An error occurred while connecting to RabbitMQ:", str(e))
