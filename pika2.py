@@ -83,3 +83,18 @@ for thread in threads:
     thread.join()
 
 connection.close()
+
+
+
+
+
+
+
+
+
+
+
+
+  ssl_options=ssl_context.wrap_socket(socket.socket())
+NameError: name 'socket' is not defined
+
