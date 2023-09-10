@@ -1,0 +1,1 @@
+TypeError: ssl_options must be None or SSLOptions but got {'ssl_version': <_SSLMethod.PROTOCOL_TLSv1_2: 5>, 'ca_certs': '/home/kk/client/cert.pem', 'keyfile': '/home/kk/client/key.pem', 'certfile': '/home/kk/client/cert.pem', 'cert_reqs': <VerifyMode.CERT_REQUIRED: 2>}
