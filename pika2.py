@@ -30,10 +30,10 @@ def do_work(connection, channel, delivery_tag, body):
     thread_id = threading.get_ident()
     fmt1 = 'Thread id: {} Delivery tag: {} Message body: {}'
     LOGGER.info(fmt1.format(thread_id, delivery_tag, body))
-    
+
     # Sleeping to simulate 10 seconds of work
     time.sleep(10)
-    
+
     cb = functools.partial(ack_message, channel, delivery_tag)
     connection.add_callback_threadsafe(cb)
 
@@ -49,19 +49,16 @@ def on_message(channel, method_frame, header_frame, body, args):
 credentials = pika.PlainCredentials('guest', 'guest')
 
 # Enable TLS connection
-ssl_options = ssl.create_default_context(
-    cafile="/home/kk/testca/cacert.pem",
-    certfile="/home/kk/client/cert.pem",
-    keyfile="/home/kk/client/key.pem"
-)
-ssl_options.check_hostname = False
+ssl_context = ssl.create_default_context(cafile="/home/kk/testca/cacert.pem")
+ssl_context.check_hostname = False
+ssl_context.load_cert_chain(certfile="/home/kk/client/cert.pem", keyfile="/home/kk/client/key.pem")
 
 parameters = pika.ConnectionParameters(
     host='localhost',
     port=5671,
     credentials=credentials,
     ssl=True,
-    ssl_options=ssl_options
+    ssl_options=ssl_context.wrap_socket(socket.socket())
 )
 
 connection = pika.BlockingConnection(parameters)
@@ -86,11 +83,3 @@ for thread in threads:
     thread.join()
 
 connection.close()
-
-
-
-
-
-
- ssl_options = ssl.create_default_context(
-TypeError: create_default_context() got an unexpected keyword argument 'certfile'
