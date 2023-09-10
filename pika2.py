@@ -4,6 +4,7 @@ import pika
 import threading
 import time
 import ssl
+import socket
 
 LOG_FORMAT = (
     '%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
@@ -54,7 +55,7 @@ ssl_context.check_hostname = False
 ssl_context.load_cert_chain(certfile="/home/kk/client/cert.pem", keyfile="/home/kk/client/key.pem")
 
 parameters = pika.ConnectionParameters(
-    host='localhost',
+    host='127.0.0.1',
     port=5671,
     credentials=credentials,
     ssl=True,
@@ -83,10 +84,6 @@ for thread in threads:
     thread.join()
 
 connection.close()
-
-
-
-
 
 
 
