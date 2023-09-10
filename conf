@@ -1,17 +1,27 @@
 [
-  {ssl, [{versions, ['tlsv1.2', 'tlsv1.1']}]},
-  {rabbit, [
-    {ssl_listeners, [5671]},
-    {ssl_options, [
-{cacertfile, "/home/kk/testca/cacert.pem"},
-                    {certfile,"/home/kk/server/cert.pem"},
-                    {keyfile,"/home/kk/server/key.pem"}
-      {password, "MySecretPassword"},
-      {verify, verify_peer},
-      {fail_if_no_peer_cert, false}
-    ]},
-    {auth_mechanisms, ['PLAIN', 'AMQPLAIN', 'EXTERNAL']},
-    {ssl_cert_login_from, common_name}
-  ]}
+  {
+    ssl, 
+    [
+      {versions, ['tlsv1.2', 'tlsv1.1']}
+    ]
+  },
+  {
+    rabbit, 
+    [
+      {ssl_listeners, [5671]},
+      {
+        ssl_options, 
+        [
+          {cacertfile, "/home/kk/testca/cacert.pem"},
+          {certfile,"/home/kk/server/cert.pem"},
+          {keyfile,"/home/kk/server/key.pem"},
+          {password, "MySecretPassword"},
+          {verify, verify_peer},
+          {fail_if_no_peer_cert, false}
+        ]
+      },
+      {auth_mechanisms, ['PLAIN', 'AMQPLAIN', 'EXTERNAL']},
+      {ssl_cert_login_from, localhost}
+    ]
+  }
 ].
-
