@@ -86,3 +86,11 @@ for thread in threads:
     thread.join()
 
 connection.close()
+
+
+
+
+
+
+ ssl_options = ssl.create_default_context(
+TypeError: create_default_context() got an unexpected keyword argument 'certfile'
